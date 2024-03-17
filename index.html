@@ -6,53 +6,7 @@
 <title>Video Player</title>
 </head>
 <body>
-<iframe id="videoPlayer" src="https://drive.google.com/file/d/1-SMSFCkmZh9g4-Q3aj8MTewR2-LfCno8/preview" width="1280" height="720"></iframe>
+<iframe id="videoPlayer" src="https://drive.google.com/file/d/1-SMSFCkmZh9g4-Q3aj8MTewR2-LfCno8/preview" width="1280" height="720" allowfullscreen></iframe>
 
-<button id="fullScreenButton">Enter Full Screen</button>
-
-<script>
-// Get the iframe element
-const iframe = document.getElementById("videoPlayer");
-
-// Add event listener to wait for iframe to load
-iframe.addEventListener("load", function() {
-  // Get the content window of the iframe
-  const contentWindow = iframe.contentWindow;
-
-  // Add event listener for the full-screen button
-  document.getElementById("fullScreenButton").addEventListener("click", function() {
-    // Check if full-screen API is supported
-    if (contentWindow.document.fullscreenEnabled || contentWindow.document.webkitFullscreenEnabled || contentWindow.document.mozFullScreenEnabled || contentWindow.document.msFullscreenEnabled) {
-      // Request full-screen mode
-      if (contentWindow.document.documentElement.requestFullscreen) {
-        contentWindow.document.documentElement.requestFullscreen();
-      } else if (contentWindow.document.documentElement.webkitRequestFullscreen) {
-        contentWindow.document.documentElement.webkitRequestFullscreen();
-      } else if (contentWindow.document.documentElement.mozRequestFullScreen) {
-        contentWindow.document.documentElement.mozRequestFullScreen();
-      } else if (contentWindow.document.documentElement.msRequestFullscreen) {
-        contentWindow.document.documentElement.msRequestFullscreen();
-      }
-    }
-  });
-});
-
-// Check if local storage has progress data
-if (localStorage.getItem("videoProgress")) {
-  // Set the current time of the video player to the saved progress
-  iframe.addEventListener("load", function() {
-    const contentWindow = iframe.contentWindow;
-    contentWindow.postMessage({ type: "seekTo", time: parseFloat(localStorage.getItem("videoProgress")) }, "*");
-  });
-}
-
-// Save progress to local storage when video is paused or ended
-window.addEventListener("message", function(event) {
-  if (event.data.type === "paused" || event.data.type === "ended") {
-    // Save progress to local storage
-    localStorage.setItem("videoProgress", event.data.currentTime.toString());
-  }
-});
-</script>
 </body>
 </html>
