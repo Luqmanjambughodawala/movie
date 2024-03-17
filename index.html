@@ -1,7 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Player</title>
+</head>
+<body>
+<video id="videoPlayer" controls width="1280" height="720">
+  <source src="https://drive.google.com/uc?export=download&id=1-SMSFCkmZh9g4-Q3aj8MTewR2-LfCno8" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-<iframe src="https://drive.google.com/file/d/1-SMSFCkmZh9g4-Q3aj8MTewR2-LfCno8/preview" 
-        width="100%" 
-        height="100%" 
-        style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; border: none;" 
-        allow="autoplay" 
-        allowfullscreen></iframe>
+<script>
+// Check if local storage has progress data
+if (localStorage.getItem("videoProgress")) {
+  const videoPlayer = document.getElementById("videoPlayer");
+  // Set the current time of the video player to the saved progress
+  videoPlayer.currentTime = parseFloat(localStorage.getItem("videoProgress"));
+}
+
+// Save progress to local storage when video is paused or ended
+document.getElementById("videoPlayer").addEventListener("pause", function() {
+  const videoPlayer = document.getElementById("videoPlayer");
+  localStorage.setItem("videoProgress", videoPlayer.currentTime.toString());
+});
+
+document.getElementById("videoPlayer").addEventListener("ended", function() {
+  // Clear progress from local storage when video ends
+  localStorage.removeItem("videoProgress");
+});
+</script>
+</body>
+</html>
