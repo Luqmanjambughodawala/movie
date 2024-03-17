@@ -6,28 +6,27 @@
 <title>Video Player</title>
 </head>
 <body>
-<video id="videoPlayer" controls width="1280" height="720">
-  <source src="https://drive.google.com/uc?export=download&id=1-SMSFCkmZh9g4-Q3aj8MTewR2-LfCno8" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<iframe id="videoPlayer" src="https://drive.google.com/file/d/1-SMSFCkmZh9g4-Q3aj8MTewR2-LfCno8/preview" width="1280" height="720"></iframe>
 
 <script>
 // Check if local storage has progress data
 if (localStorage.getItem("videoProgress")) {
-  const videoPlayer = document.getElementById("videoPlayer");
-  // Set the current time of the video player to the saved progress
-  videoPlayer.currentTime = parseFloat(localStorage.getItem("videoProgress"));
+  const iframe = document.getElementById("videoPlayer");
+  // Add event listener to wait for iframe to load
+  iframe.addEventListener("load", function() {
+    // Get the content window of the iframe
+    const contentWindow = iframe.contentWindow;
+    // Set the current time of the video player to the saved progress
+    contentWindow.postMessage({ type: "seekTo", time: parseFloat(localStorage.getItem("videoProgress")) }, "*");
+  });
 }
 
 // Save progress to local storage when video is paused or ended
-document.getElementById("videoPlayer").addEventListener("pause", function() {
-  const videoPlayer = document.getElementById("videoPlayer");
-  localStorage.setItem("videoProgress", videoPlayer.currentTime.toString());
-});
-
-document.getElementById("videoPlayer").addEventListener("ended", function() {
-  // Clear progress from local storage when video ends
-  localStorage.removeItem("videoProgress");
+window.addEventListener("message", function(event) {
+  if (event.data.type === "paused" || event.data.type === "ended") {
+    // Save progress to local storage
+    localStorage.setItem("videoProgress", event.data.currentTime.toString());
+  }
 });
 </script>
 </body>
